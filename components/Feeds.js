@@ -1,5 +1,6 @@
 import { OfficeBuildingIcon } from '@heroicons/react/outline'
 import React from 'react'
+import MsgInputs from './MsgInputs'
 
 export default function Feeds() {
   return (
@@ -7,6 +8,10 @@ export default function Feeds() {
         <div className='flex justify-between px-2 my-3 border-b pb-2 font-extrabold sticky'>
             <h1>Home</h1>
             <OfficeBuildingIcon className='hoverEffect w-7 h-7 '/>
+        </div>
+        {/* message input */}
+        <div>
+            <MsgInputs/>
         </div>
     </div>
   )
