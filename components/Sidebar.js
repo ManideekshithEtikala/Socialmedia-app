@@ -10,7 +10,7 @@ import {
   UserIcon,
 } from "@heroicons/react/outline";
 import { HomeIcon } from "@heroicons/react/solid";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 export default function Sidebar() {
   const { data: session } = useSession();
   
@@ -44,7 +44,7 @@ export default function Sidebar() {
           <div className="hoverEffect justify-center items-center p-2 m-2 text-lg shadow-md bg-green-500 text-white hover:brightness-80 hidden xl:flex font-bold">
             <button>Hello me</button>
           </div>
-          <div className="hoverEffect flex items-center my-1 p-2 w-full">
+          <div className="hoverEffect flex items-center my-1 p-2 w-full" onClick={()=>{signOut()}}>
             <div>
               <img
                 src={session.user.image}
