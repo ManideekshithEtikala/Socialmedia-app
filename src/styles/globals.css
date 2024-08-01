@@ -2,8 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components{
-    .hoverEffect{
-        @apply cursor-pointer xl:w-[200px] hover:bg-green-600 w-[52px] h-[auto] rounded-full hover:text-[#f9f2e6]
-    }
+@layer components {
+  .hoverEffect {
+    @apply cursor-pointer xl:w-[200px] hover:bg-green-600 w-[52px] h-[auto] rounded-full hover:text-[#f9f2e6] transition duration-300
+        ease-out;
+  }
 }

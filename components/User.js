@@ -2,7 +2,7 @@ import React from "react";
 
 export default function User({ user }) {
   return (
-    <main className="flex bg-gray-50 hover:bg-gray-200 items-center justify-between rounded-full mb-1 border-b">
+    <main className="flex bg-gray-50 hover:bg-gray-200 items-center justify-between rounded-full mb-1 border-b transition duration-300 ease-out">
       <div className="w-fit">
         <img src={user.picture.thumbnail} alt="user image" className="w-14 h-14 rounded-full m-2 ml-3" />
       </div>

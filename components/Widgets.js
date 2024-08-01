@@ -2,6 +2,7 @@ import { SearchIcon } from "@heroicons/react/outline";
 import React, { useState } from "react";
 import News from "./News";
 import User from "./User";
+import { AnimatePresence, motion } from "framer-motion";
 export default function Widgets({ articles, RandomUsers }) {
   const [articleNum, setarticleNum] = useState(4);
   const [noofusers, setnoofusers] = useState(3);
@@ -20,11 +21,21 @@ export default function Widgets({ articles, RandomUsers }) {
 
       <div className="bg-gray-100 rounded-lg mt-3">
         <h1 className="font-bold text-xl text-center font-sans text-gray-700">
-            Well!..Today's Hot News
+          Well!..Today's Hot News
         </h1>
-        {articles.slice(0, articleNum).map((article, index) => (
-          <News key={index} article={article} />
-        ))}
+        <AnimatePresence>
+          {articles.slice(0, articleNum).map((article, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1 }}
+            >
+              <News key={index} article={article} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
         <button
           className="p-1 text-blue-500 text-md hover:text-blue-600"
           onClick={() => {
@@ -39,9 +50,20 @@ export default function Widgets({ articles, RandomUsers }) {
         <h1 className="font-bold text-xl text-center font-sans text-gray-700">
           Explore and Follow!!
         </h1>
-        {RandomUsers.slice(0,noofusers).map((user, id) => (
-          <User key={id} user={user} />
-        ))}
+
+        <AnimatePresence>
+          {RandomUsers.slice(0, noofusers).map((user, id) => (
+            <motion.div
+              key={id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1 }}
+            >
+              <User key={id} user={user} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
         <button
           className="p-1 text-blue-500 text-md hover:text-blue-600"
           onClick={() => {

@@ -2,7 +2,8 @@ import React from 'react'
 
 export default function News({article}) {
   return (
-    <a href={article.url} target='_blank' className='flex justify-center items-center hover:bg-gray-200 m-2 border-b p-2'>
+    <a href={article.url} target='_blank' className='flex justify-center items-center hover:bg-gray-200 m-2 border-b p-2 transition duration-300
+        ease-out'>
         <div> 
             <p className='font-semibold text-sm text-gray-700'>{article.title}</p>
             <p className='text-xs text-gray-500'><span className='text-xs'>~</span>{article.author}</p>
