@@ -1,11 +1,12 @@
-import { ChatIcon, HeartIcon, ShareIcon } from "@heroicons/react/outline";
+import { ChatIcon, HeartIcon, ShareIcon, TrashIcon } from "@heroicons/react/outline";
 import { DotsCircleHorizontalIcon, SaveAsIcon } from "@heroicons/react/solid";
 import { HeartIcon as Heartfilled } from "@heroicons/react/solid";
 import React, { useEffect, useState } from "react";
 import Moment from "react-moment";
 import { signIn, useSession } from "next-auth/react";
 import { setDoc, doc, onSnapshot, collection, deleteDoc } from "firebase/firestore";
-import { db } from "../firebase";
+import { db, storage } from "../firebase";
+import { deleteObject ,ref} from "firebase/storage";
 export default function Posts({ post }) {
   const { data: session } = useSession();
   const [likes, setLikes] = useState([]);
@@ -31,6 +32,13 @@ export default function Posts({ post }) {
       }
     }else{
       signIn()
+    }
+  }
+
+  async function deletePost(){
+    if(window.confirm("Are you sure you want to delete the post?")){
+      deleteDoc(doc(db,"posts",post.id ))
+      deleteObject(ref(storage,`posts/${post.id}/image`))
     }
   }
   return (
@@ -82,8 +90,10 @@ export default function Posts({ post }) {
           )}
           </div>
           <ChatIcon className="w-8 cursor-pointer hover:text-gray-900" />
+          {session?.user.uid == post.data().id && (
+            <TrashIcon onClick={deletePost} className="w-8 cursor-pointer hover:text-gray-900" />
+          )}
           <ShareIcon className="w-8 cursor-pointer hover:text-gray-900" />
-          <SaveAsIcon className="w-8 cursor-pointer hover:text-gray-900" />
         </div>
       </div>
     </main>
