@@ -5,24 +5,36 @@ import { modelState, postidState } from "../atom/atomModel";
 import {
   XIcon,
   EmojiHappyIcon,
-  PhotographIcon,
 } from "@heroicons/react/outline";
-import { onSnapshot, doc } from "firebase/firestore";
+import { onSnapshot, doc, addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
 import Moment from "react-moment";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 export default function Component() {
   const [open, setOpen] = useRecoilState(modelState);
   const [postid] = useRecoilState(postidState);
   const [input, setInput] = useState("");
   const [post, setPost] = useState({});
   const { data: session } = useSession();
+  const router = useRouter();
   useEffect(() => {
     onSnapshot(doc(db, "posts", postid), (snapshot) => {
       setPost(snapshot);
     });
   }, [postid, db]);
-  function sendComment() {}
+  async function sendComment() {
+    await addDoc(collection(db,"posts",postid,"comment"),{
+        comment:input,
+        name:session.user.name,
+        userImg :session.user.image,
+        username:session.user.username,
+        timestamp:serverTimestamp()
+    })
+    setOpen(false)
+    setInput("")
+    router.push(`/posts/${postid}`)
+  }
   return (
     <>
       {open && (
@@ -53,7 +65,7 @@ export default function Component() {
                 <p className="font-medium text-sm text-gray-700 px-1 hover:cursor-pointer ">
                   @{post?.data()?.username}
                 </p>
-                <p className="text-sm text-gray-700 text-start flex ">~~{post?.data().text}</p>
+                <p className="text-sm text-gray-700 text-start flex ">~~{post?.data()?.text}</p>
               </div>
               <span className="text-gray-400 text-sm px-1 ml-1 flex mb-2 justify-center items-center">
                 <Moment fromNow>{post?.data()?.timestamp?.toDate()}</Moment>

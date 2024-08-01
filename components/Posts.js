@@ -1,20 +1,32 @@
-import { ChatIcon, HeartIcon, ShareIcon, TrashIcon } from "@heroicons/react/outline";
+import {
+  ChatIcon,
+  HeartIcon,
+  ShareIcon,
+  TrashIcon,
+} from "@heroicons/react/outline";
 import { DotsCircleHorizontalIcon, SaveAsIcon } from "@heroicons/react/solid";
 import { HeartIcon as Heartfilled } from "@heroicons/react/solid";
 import React, { useEffect, useState } from "react";
 import Moment from "react-moment";
 import { signIn, useSession } from "next-auth/react";
-import { setDoc, doc, onSnapshot, collection, deleteDoc } from "firebase/firestore";
+import {
+  setDoc,
+  doc,
+  onSnapshot,
+  collection,
+  deleteDoc,
+} from "firebase/firestore";
 import { db, storage } from "../firebase";
-import { deleteObject ,ref} from "firebase/storage";
+import { deleteObject, ref } from "firebase/storage";
 import { useRecoilState } from "recoil";
 import { modelState, postidState } from "../atom/atomModel";
 export default function Posts({ post }) {
   const { data: session } = useSession();
   const [likes, setLikes] = useState([]);
+  const [comments, setComments] = useState([]);
   const [hasLiked, sethasLiked] = useState(false);
-  const [open,setOpen] = useRecoilState(modelState)
-  const [postid,setPostid]=useRecoilState(postidState)
+  const [open, setOpen] = useRecoilState(modelState);
+  const [postid, setPostid] = useRecoilState(postidState);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -24,27 +36,36 @@ export default function Posts({ post }) {
   }, [db]);
 
   useEffect(() => {
-    sethasLiked(likes.findIndex((likes) => likes.id == session?.user.uid) !== -1);
+    const unsubscribe = onSnapshot(
+      collection(db, "posts", post.id, "comment"),
+      (snapshot) => setComments(snapshot.docs)
+    );
+  }, [db]);
+
+  useEffect(() => {
+    sethasLiked(
+      likes.findIndex((likes) => likes.id == session?.user.uid) !== -1
+    );
   }, [likes]);
   async function Likes() {
-    if(session){
-      if(hasLiked){
-        await deleteDoc(doc(db,"posts",post.id,"likes",session?.user.uid ))
-      }else{
+    if (session) {
+      if (hasLiked) {
+        await deleteDoc(doc(db, "posts", post.id, "likes", session?.user.uid));
+      } else {
         await setDoc(doc(db, "posts", post.id, "likes", session?.user.uid), {
           username: session.user.username,
         });
       }
-    }else{
-      signIn()
+    } else {
+      signIn();
     }
   }
 
-  async function deletePost(){
-    if(window.confirm("Are you sure you want to delete the post?")){
-      deleteDoc(doc(db,"posts",post.id ))
-      if(post.data().image){
-        deleteObject(ref(storage,`posts/${post.id}/image`))
+  async function deletePost() {
+    if (window.confirm("Are you sure you want to delete the post?")) {
+      deleteDoc(doc(db, "posts", post.id));
+      if (post.data().image) {
+        deleteObject(ref(storage, `posts/${post.id}/image`));
       }
     }
   }
@@ -83,30 +104,47 @@ export default function Posts({ post }) {
         </div>
         <div className="flex justify-between w-full mt-3 pt-2 text-gray-600">
           <div className="flex ">
-          {hasLiked ?(
-            <Heartfilled 
-            onClick={Likes}
-            className="w-8 cursor-pointer text-red-500"/>
-          ):
-          <HeartIcon
-            onClick={Likes}
-            className="w-8 cursor-pointer text-red-700 hover:text-red-900"
-          />}
-          {likes.length>0&&(
-            <div className="flex justify-center items-center text-sm text-gray-400">{likes.length}</div>
-          )}
+            {hasLiked ? (
+              <Heartfilled
+                onClick={Likes}
+                className="w-8 cursor-pointer text-red-500"
+              />
+            ) : (
+              <HeartIcon
+                onClick={Likes}
+                className="w-8 cursor-pointer text-red-700 hover:text-red-900"
+              />
+            )}
+            {likes.length > 0 && (
+              <div className="flex justify-center items-center text-sm text-gray-400">
+                {likes.length}
+              </div>
+            )}
           </div>
-          <ChatIcon onClick={()=>{
-            if(!session){
-              signIn()
-            }else{
-              setOpen(!open)
-              setPostid(post.id)}
-            }
-            
-            } className="w-8 cursor-pointer hover:text-gray-900" />
+          <div className="flex items-center">
+            <ChatIcon
+              onClick={() => {
+                if (!session) {
+                  signIn();
+                } else {
+                  setOpen(!open);
+                  setPostid(post.id);
+                }
+              }}
+              className="w-8 cursor-pointer hover:text-gray-900"
+            />
+
+            {comments.length > 0 && (
+              <div className="flex justify-center items-center text-sm text-gray-400">
+                {comments.length}
+              </div>
+            )}
+          </div>
           {session?.user.uid == post.data().id && (
-            <TrashIcon onClick={deletePost} className="w-8 cursor-pointer hover:text-gray-900" />
+            <TrashIcon
+              onClick={deletePost}
+              className="w-8 cursor-pointer hover:text-gray-900"
+            />
           )}
           <ShareIcon className="w-8 cursor-pointer hover:text-gray-900" />
         </div>
