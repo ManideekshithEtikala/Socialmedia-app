@@ -7,10 +7,14 @@ import { signIn, useSession } from "next-auth/react";
 import { setDoc, doc, onSnapshot, collection, deleteDoc } from "firebase/firestore";
 import { db, storage } from "../firebase";
 import { deleteObject ,ref} from "firebase/storage";
+import { useRecoilState } from "recoil";
+import { modelState } from "../atom/atomModel";
 export default function Posts({ post }) {
   const { data: session } = useSession();
   const [likes, setLikes] = useState([]);
   const [hasLiked, sethasLiked] = useState(false);
+  const [open,setOpen] = useRecoilState(modelState)
+
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(db, "posts", post.id, "likes"),
@@ -91,7 +95,7 @@ export default function Posts({ post }) {
             <div className="flex justify-center items-center text-sm text-gray-400">{likes.length}</div>
           )}
           </div>
-          <ChatIcon className="w-8 cursor-pointer hover:text-gray-900" />
+          <ChatIcon onClick={()=>setOpen(!open)} className="w-8 cursor-pointer hover:text-gray-900" />
           {session?.user.uid == post.data().id && (
             <TrashIcon onClick={deletePost} className="w-8 cursor-pointer hover:text-gray-900" />
           )}

@@ -2,6 +2,15 @@ import { Inter } from "next/font/google";
 import Sidebar from "../../components/Sidebar";
 import Feeds from "../../components/Feeds";
 import Widgets from "../../components/Widgets";
+import React from 'react';
+import {
+  RecoilRoot,
+  atom,
+  selector,
+  useRecoilState,
+  useRecoilValue,
+} from 'recoil';
+import Component from "../../components/Component";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home({newsResult,RandomUsers}) {
@@ -13,6 +22,8 @@ export default function Home({newsResult,RandomUsers}) {
       <Feeds />
         {/* widgets */}
       <Widgets articles={newsResult.articles} RandomUsers = {RandomUsers.results}/>
+
+      <Component />
     </div>
 
   );
