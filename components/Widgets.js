@@ -21,7 +21,7 @@ export default function Widgets({ articles, RandomUsers }) {
 
       <div className="bg-gray-100 rounded-lg mt-3">
         <h1 className="font-bold text-xl text-center font-sans text-gray-700">
-          Well!..Today's Hot News
+          Well!..Todays Hot News
         </h1>
         <AnimatePresence>
           {articles?.slice(0, articleNum).map((article, index) => (
