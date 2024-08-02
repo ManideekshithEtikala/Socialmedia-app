@@ -3,13 +3,6 @@ import Sidebar from "../../components/Sidebar";
 import Feeds from "../../components/Feeds";
 import Widgets from "../../components/Widgets";
 import React from 'react';
-import {
-  RecoilRoot,
-  atom,
-  selector,
-  useRecoilState,
-  useRecoilValue,
-} from 'recoil';
 import Component from "../../components/Component";
 const inter = Inter({ subsets: ["latin"] });
 

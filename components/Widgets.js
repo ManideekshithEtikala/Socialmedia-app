@@ -24,7 +24,7 @@ export default function Widgets({ articles, RandomUsers }) {
           Well!..Today's Hot News
         </h1>
         <AnimatePresence>
-          {articles.slice(0, articleNum).map((article, index) => (
+          {articles?.slice(0, articleNum).map((article, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0 }}
@@ -52,7 +52,7 @@ export default function Widgets({ articles, RandomUsers }) {
         </h1>
 
         <AnimatePresence>
-          {RandomUsers.slice(0, noofusers).map((user, id) => (
+          {RandomUsers?.slice(0, noofusers).map((user, id) => (
             <motion.div
               key={id}
               initial={{ opacity: 0 }}

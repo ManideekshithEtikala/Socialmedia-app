@@ -20,7 +20,9 @@ import { db, storage } from "../firebase";
 import { deleteObject, ref } from "firebase/storage";
 import { useRecoilState } from "recoil";
 import { modelState, postidState } from "../atom/atomModel";
-export default function Posts({ post }) {
+import { useRouter } from "next/router";
+export default function Posts({ post,id }) {
+  const router =useRouter()
   const { data: session } = useSession();
   const [likes, setLikes] = useState([]);
   const [comments, setComments] = useState([]);
@@ -30,14 +32,14 @@ export default function Posts({ post }) {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
-      collection(db, "posts", post.id, "likes"),
+      collection(db, "posts", id, "likes"),
       (snapshot) => setLikes(snapshot.docs)
     );
   }, [db]);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
-      collection(db, "posts", post.id, "comment"),
+      collection(db, "posts", id, "comment"),
       (snapshot) => setComments(snapshot.docs)
     );
   }, [db]);
@@ -50,9 +52,9 @@ export default function Posts({ post }) {
   async function Likes() {
     if (session) {
       if (hasLiked) {
-        await deleteDoc(doc(db, "posts", post.id, "likes", session?.user.uid));
+        await deleteDoc(doc(db, "posts", id, "likes", session?.user.uid));
       } else {
-        await setDoc(doc(db, "posts", post.id, "likes", session?.user.uid), {
+        await setDoc(doc(db, "posts", id, "likes", session?.user.uid), {
           username: session.user.username,
         });
       }
@@ -63,9 +65,10 @@ export default function Posts({ post }) {
 
   async function deletePost() {
     if (window.confirm("Are you sure you want to delete the post?")) {
-      deleteDoc(doc(db, "posts", post.id));
+      deleteDoc(doc(db, "posts", id));
       if (post.data().image) {
-        deleteObject(ref(storage, `posts/${post.id}/image`));
+        deleteObject(ref(storage, `posts/${id}/image`));
+        router.push('/')
       }
     }
   }
@@ -73,7 +76,7 @@ export default function Posts({ post }) {
     <main className="w-full flex px-3 py-5 border-b mb-2">
       <div className="w-fit ">
         <img
-          src={post.data().userImg}
+          src={post?.data()?.userImg}
           className="w-12 h-12 rounded-full mr-4 cursor-pointer"
         />
       </div>
@@ -81,23 +84,23 @@ export default function Posts({ post }) {
         <div className="flex justify-between w-full">
           <div className="flex items-center py-2">
             <h1 className="font-bold text-xl text-gray-800 font-serif hover:underline hover:cursor-pointer">
-              {post.name}
+              {post?.name}
             </h1>
             <p className="font-medium text-gray-700 px-1 hover:cursor-pointer hover:underline">
-              {post.data().username}
+              {post?.data()?.username}
             </p>
             <span className="text-gray-400 text-sm px-1">
-              <Moment fromNow>{post?.data().timestamp?.toDate()}</Moment>
+              <Moment fromNow>{post?.data()?.timestamp?.toDate()}</Moment>
             </span>
           </div>
           <div>
             <DotsCircleHorizontalIcon className="w-7 h-7 cursor-pointer text-gray-700  hover:text-gray-900" />
           </div>
         </div>
-        <div className="text-gray-800 pb-2">{post.data().text}</div>
+        <div className="text-gray-800 pb-2">{post?.data()?.text}</div>
         <div className="w-full h-52">
           <img
-            src={post.data().image}
+            src={post?.data()?.image}
             alt="posting image"
             className="w-fit h-full rounded-lg"
           />
@@ -128,7 +131,7 @@ export default function Posts({ post }) {
                   signIn();
                 } else {
                   setOpen(!open);
-                  setPostid(post.id);
+                  setPostid(id);
                 }
               }}
               className="w-8 cursor-pointer hover:text-gray-900"
@@ -140,7 +143,7 @@ export default function Posts({ post }) {
               </div>
             )}
           </div>
-          {session?.user.uid == post.data().id && (
+          {session?.user.uid == post?.data()?.id && (
             <TrashIcon
               onClick={deletePost}
               className="w-8 cursor-pointer hover:text-gray-900"
