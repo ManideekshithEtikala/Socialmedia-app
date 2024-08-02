@@ -63,7 +63,8 @@ export default function Post({ newsResult, randomUsers }) {
               <Comment
                 comment={comment.data()}
                 key={comment.id}
-                id={comment.id}
+                originalPostId={id}
+                commentId={comment.id}
               />
             ))}
           </div>

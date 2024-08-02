@@ -103,6 +103,7 @@ export default function Posts({ post,id }) {
             src={post?.data()?.image}
             alt="posting image"
             className="w-fit h-full rounded-lg"
+            onClick={()=>router.push(`/posts/${id}`)}
           />
         </div>
         <div className="flex justify-between w-full mt-3 pt-2 text-gray-600">
