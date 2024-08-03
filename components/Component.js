@@ -29,8 +29,8 @@ export default function Component() {
         name:session.user.name,
         userImg :session.user.image,
         username:session.user.username,
+        userId:session.user.uid,
         timestamp:serverTimestamp(),
-        userId:session.user.uid
     })
     setOpen(false)
     setInput("")
