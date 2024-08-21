@@ -15,6 +15,7 @@ export default function Home({newsResult,RandomUsers}) {
       <Feeds />
         {/* widgets */}
       <Widgets articles={newsResult.articles} RandomUsers = {RandomUsers.results}/>
+      {/* Component */}
 
       <Component />
     </div>
